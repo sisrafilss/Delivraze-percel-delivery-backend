@@ -1,11 +1,8 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import { UserController } from "./user.controller";
 
 const router = Router();
 
-router.post("/register", async (req: Request, res: Response) => {
-  res.json({
-    message: "Hitting the user registration route.!",
-  });
-});
+router.post("/register", UserController.createUser);
 
 export const UserRoutes = router;
