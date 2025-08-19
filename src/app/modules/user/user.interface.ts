@@ -24,8 +24,8 @@ export interface IUser {
   isVerified?: boolean;
   role: Role;
   auths: IAuthProvider[];
-  parcelSend: Types.ObjectId[];
-  parcelReceive: Types.ObjectId[];
+  parcelSend?: Types.ObjectId[];
+  parcelReceive?: Types.ObjectId[];
   guide?: Types.ObjectId[];
   createdAt?: Date;
 }
