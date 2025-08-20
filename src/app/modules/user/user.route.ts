@@ -3,11 +3,15 @@ import { checkAuth } from "../../middlewares/checkAuth";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { UserController } from "./user.controller";
 import { Role } from "./user.interface";
-import { updateUserZodSchema } from "./user.validation";
+import { createUserZodSchema, updateUserZodSchema } from "./user.validation";
 
 const router = Router();
 
-router.post("/register", UserController.createUser);
+router.post(
+  "/register",
+  validateRequest(createUserZodSchema),
+  UserController.createUser
+);
 
 router.get(
   "/all-users",

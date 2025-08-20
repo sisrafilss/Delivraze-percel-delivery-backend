@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
+import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
@@ -36,7 +37,6 @@ const credentialsLogin = catchAsync(
 
 const logout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log("Hitting Log out route!");
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: false,
@@ -100,9 +100,60 @@ const changePassword = catchAsync(
   }
 );
 
+const resetPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+
+    await AuthServices.resetPassword(req.body, decodedToken as JwtPayload);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Password Changed Successfully",
+      data: null,
+    });
+  }
+);
+
+const forgotPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+
+    await AuthServices.forgotPassword(email);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Email Sent Successfully",
+      data: null,
+    });
+  }
+);
+
+const googleCallbackController = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    let redirectTo = req.query.state ? (req.query.state as string) : "";
+
+    if (redirectTo.startsWith("/")) {
+      redirectTo = redirectTo.slice(1);
+    }
+    const user = req.user;
+
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+    }
+    const tokenInfo = createUserTokens(user);
+    setAuthCookie(res, tokenInfo);
+    res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`);
+  }
+);
+
 export const AuthController = {
   credentialsLogin,
   logout,
   getNewAccessToken,
   changePassword,
+  forgotPassword,
+  resetPassword,
+  googleCallbackController,
 };
