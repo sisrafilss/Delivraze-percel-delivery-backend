@@ -23,6 +23,23 @@ const parcelRequest = catchAsync(
   }
 );
 
+const cancellParcel = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const parcelId = req.params.id;
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.cancelParcel(decodedToken, parcelId);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Parcel sending calcelled successfull",
+      data: result,
+    });
+  }
+);
+
 export const ParcelController = {
   parcelRequest,
+  cancellParcel,
 };

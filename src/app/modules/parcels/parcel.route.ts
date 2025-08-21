@@ -13,5 +13,10 @@ router.post(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.SENDER),
   ParcelController.parcelRequest
 );
+router.patch(
+  "/cancel/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.SENDER),
+  ParcelController.cancellParcel
+);
 
 export const ParcelRoutes = router;

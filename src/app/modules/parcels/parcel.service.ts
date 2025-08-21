@@ -45,6 +45,34 @@ const parcelSendRequest = async (
   return updatedParcel;
 };
 
+const cancelParcel = async (decodedToken: JwtPayload, parcelId: string) => {
+  const isParcelExists = await Parcel.findById(parcelId);
+
+  if (!isParcelExists)
+    throw new AppError(httpStatus.NOT_FOUND, "Parcel not found!");
+
+  if (!isParcelExists.senderId === decodedToken.userId) {
+    console.log(isParcelExists.senderId, decodedToken.userId);
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Parcel id is not matched with your parcels"
+    );
+  }
+
+  if (!(isParcelExists.status === ParcelStatus.PENDING)) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Parcel can't be canlcel, because it is already ${isParcelExists.status}`
+    );
+  }
+
+  isParcelExists.status = ParcelStatus.CANCELLED;
+  await isParcelExists.save();
+
+  //   return {};
+};
+
 export const ParcelService = {
   parcelSendRequest,
+  cancelParcel,
 };
