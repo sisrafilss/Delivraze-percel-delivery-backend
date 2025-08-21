@@ -1,0 +1,28 @@
+import { NextFunction, Request, Response } from "express";
+import httpStatus from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
+import { catchAsync } from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import { ParcelService } from "./parcel.service";
+
+const parcelRequest = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.parcelSendRequest(
+      decodedToken,
+      req.body
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Parcel send request successfull",
+      data: result,
+    });
+  }
+);
+
+export const ParcelController = {
+  parcelRequest,
+};
