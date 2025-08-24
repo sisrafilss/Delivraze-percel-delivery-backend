@@ -38,8 +38,40 @@ const cancellParcel = catchAsync(
     });
   }
 );
+const getAllParcelsBySender = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.getAllParcelsBySender(decodedToken);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "All of your sending parcel requests",
+      data: result,
+    });
+  }
+);
+const getIncommingParcelsByReceiver = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.getIncommingParcelsByReceiver(
+      decodedToken
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "All of your incomming parcel retrieved",
+      data: result,
+    });
+  }
+);
 
 export const ParcelController = {
   parcelRequest,
   cancellParcel,
+  getAllParcelsBySender,
+  getIncommingParcelsByReceiver,
 };

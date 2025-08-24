@@ -18,5 +18,11 @@ router.patch(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.SENDER),
   ParcelController.cancellParcel
 );
+router.get("/", checkAuth(Role.SENDER), ParcelController.getAllParcelsBySender);
+router.get(
+  "/incomming",
+  checkAuth(Role.RECEIVER),
+  ParcelController.getIncommingParcelsByReceiver
+);
 
 export const ParcelRoutes = router;
