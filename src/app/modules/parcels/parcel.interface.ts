@@ -23,6 +23,7 @@ export enum ParcelType {
 }
 
 export interface IParcelRequest {
+  _id?: Types.ObjectId;
   senderId: Types.ObjectId;
   senderName: string;
   senderPhone: string;

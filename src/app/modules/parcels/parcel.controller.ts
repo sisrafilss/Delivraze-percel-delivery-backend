@@ -75,8 +75,26 @@ const getDeliveryHistoryByReceiver = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "All of your parcel history retrieved",
+      data: result,
+    });
+  }
+);
+
+const confirmDeliveryByReceiver = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.confirmDeliveryByReceiver(
+      decodedToken,
+      req.body
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Parcel status changed successfully to Delivered!",
       data: result,
     });
   }
@@ -88,4 +106,5 @@ export const ParcelController = {
   getAllParcelsBySender,
   getIncommingParcelsByReceiver,
   getDeliveryHistoryByReceiver,
+  confirmDeliveryByReceiver,
 };

@@ -173,10 +173,64 @@ const getDeliveryHistoryByReceiver = async (decodedToken: JwtPayload) => {
   return { data, meta };
 };
 
+const confirmDeliveryByReceiver = async (
+  decodedToken: JwtPayload,
+  payload: Partial<IParcelRequest>
+) => {
+  const isUserExists = await User.findById(decodedToken.userId);
+  if (isUserExists?.role !== Role.RECEIVER) {
+    throw new AppError(httpStatus.BAD_REQUEST, "You are not a Receiver");
+  }
+
+  if (decodedToken.email !== payload.receiverEmail) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Credential doesn't match. Check the user email in the request body`
+    );
+  }
+
+  const isParcelExist = await Parcel.findById(payload._id);
+  if (!isParcelExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, `Parcel not found!`);
+  }
+
+  if (isParcelExist.receiverEmail !== decodedToken.email) {
+    throw new AppError(httpStatus.BAD_REQUEST, `Parcel not matched!`);
+  }
+
+  if (isParcelExist.status === ParcelStatus.CANCELLED) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `This parcel is already cancelled.`
+    );
+  }
+
+  console.log("IsParcelExist:", isParcelExist);
+
+  if (isParcelExist.status === ParcelStatus.DELIVERED) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `This parcel is already delivered`
+    );
+  }
+
+  // change parcel status to delivered ->
+  const updatedParcel = await Parcel.findByIdAndUpdate(
+    payload._id,
+    {
+      status: ParcelStatus.DELIVERED,
+    },
+    { runValidators: true, new: true }
+  );
+
+  return updatedParcel;
+};
+
 export const ParcelService = {
   createParcelSend,
   cancelParcel,
   getAllParcelsBySender,
   getIncommingParcelsByReceiver,
   getDeliveryHistoryByReceiver,
+  confirmDeliveryByReceiver,
 };

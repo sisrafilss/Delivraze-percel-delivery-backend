@@ -3,7 +3,10 @@ import { checkAuth } from "../../middlewares/checkAuth";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { Role } from "../user/user.interface";
 import { ParcelController } from "./parcel.controller";
-import { parcelRequestZodSchema } from "./parcel.validate";
+import {
+  confirmDeliveryByReceiverZodSchema,
+  parcelRequestZodSchema,
+} from "./parcel.validate";
 
 const router = Router();
 
@@ -30,6 +33,13 @@ router.get(
   "/receiver/history",
   checkAuth(Role.RECEIVER),
   ParcelController.getDeliveryHistoryByReceiver
+);
+
+router.patch(
+  "/receiver/update-status",
+  validateRequest(confirmDeliveryByReceiverZodSchema),
+  checkAuth(Role.RECEIVER),
+  ParcelController.confirmDeliveryByReceiver
 );
 
 export const ParcelRoutes = router;
