@@ -135,6 +135,25 @@ const updateParcleByAdmin = catchAsync(
   }
 );
 
+const deleteParcelByAdmin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const parcelId = req.params.parcelId;
+
+    const result = await ParcelService.deleteParcelByAdmin(
+      decodedToken,
+      parcelId
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Parcel deleted successfully!",
+      data: result,
+    });
+  }
+);
+
 export const ParcelController = {
   createParcelSend,
   cancellParcel,
@@ -144,4 +163,5 @@ export const ParcelController = {
   confirmDeliveryByReceiver,
   getAllParcelsByAdmin,
   updateParcleByAdmin,
+  deleteParcelByAdmin,
 };

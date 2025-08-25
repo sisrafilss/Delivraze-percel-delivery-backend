@@ -56,4 +56,10 @@ router.patch(
   ParcelController.updateParcleByAdmin
 );
 
+router.delete(
+  "/delete/:parcelId",
+  checkAuth(Role.ADMIN),
+  ParcelController.deleteParcelByAdmin
+);
+
 export const ParcelRoutes = router;

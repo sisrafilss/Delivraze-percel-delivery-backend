@@ -271,6 +271,27 @@ const updateParcleByAdmin = async (
   return updatedParcel;
 };
 
+const deleteParcelByAdmin = async (
+  decodedToken: JwtPayload,
+  parcelId: string
+) => {
+  const isUserExists = await User.findById(decodedToken.userId);
+  if (!isUserExists) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
+  }
+  if (isUserExists?.role !== Role.ADMIN) {
+    throw new AppError(httpStatus.BAD_REQUEST, "You are not an Admin");
+  }
+
+  const isParcelExist = await Parcel.findById(parcelId);
+  if (!isParcelExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Parcel not found!");
+  }
+
+  const deletedData = await Parcel.findByIdAndDelete(parcelId);
+  return deletedData;
+};
+
 export const ParcelService = {
   createParcelSend,
   cancelParcel,
@@ -280,4 +301,5 @@ export const ParcelService = {
   confirmDeliveryByReceiver,
   getAllParcelsByAdmin,
   updateParcleByAdmin,
+  deleteParcelByAdmin,
 };
