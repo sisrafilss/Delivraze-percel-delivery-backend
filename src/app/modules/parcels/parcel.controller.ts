@@ -115,6 +115,26 @@ const getAllParcelsByAdmin = catchAsync(
   }
 );
 
+const updateParcleByAdmin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const parcelId = req.params.parcelId;
+
+    const result = await ParcelService.updateParcleByAdmin(
+      decodedToken,
+      parcelId,
+      req.body
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Parcel updated successfully!",
+      data: result,
+    });
+  }
+);
+
 export const ParcelController = {
   createParcelSend,
   cancellParcel,
@@ -123,4 +143,5 @@ export const ParcelController = {
   getDeliveryHistoryByReceiver,
   confirmDeliveryByReceiver,
   getAllParcelsByAdmin,
+  updateParcleByAdmin,
 };

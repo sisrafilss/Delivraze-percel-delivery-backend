@@ -6,6 +6,7 @@ import { ParcelController } from "./parcel.controller";
 import {
   confirmDeliveryByReceiverZodSchema,
   parcelRequestZodSchema,
+  updateParcelByAdminZodSchema,
 } from "./parcel.validate";
 
 const router = Router();
@@ -46,6 +47,13 @@ router.get(
   "/all",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   ParcelController.getAllParcelsByAdmin
+);
+
+router.patch(
+  "/update/:parcelId",
+  validateRequest(updateParcelByAdminZodSchema),
+  checkAuth(Role.ADMIN),
+  ParcelController.updateParcleByAdmin
 );
 
 export const ParcelRoutes = router;

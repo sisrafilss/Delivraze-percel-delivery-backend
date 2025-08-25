@@ -205,8 +205,6 @@ const confirmDeliveryByReceiver = async (
     );
   }
 
-  console.log("IsParcelExist:", isParcelExist);
-
   if (isParcelExist.status === ParcelStatus.DELIVERED) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
@@ -247,6 +245,32 @@ const getAllParcelsByAdmin = async (decodedToken: JwtPayload) => {
   return { data, meta };
 };
 
+const updateParcleByAdmin = async (
+  decodedToken: JwtPayload,
+  parcelId: string,
+  payload: Record<string, string>
+) => {
+  const isUserExists = await User.findById(decodedToken.userId);
+  if (!isUserExists) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User not found!");
+  }
+  if (isUserExists?.role !== Role.ADMIN) {
+    throw new AppError(httpStatus.BAD_REQUEST, "You are not an Admin");
+  }
+
+  const isParcelExist = await Parcel.findById(parcelId);
+  if (!isParcelExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Parcel not found!");
+  }
+
+  const updatedParcel = await Parcel.findByIdAndUpdate(parcelId, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return updatedParcel;
+};
+
 export const ParcelService = {
   createParcelSend,
   cancelParcel,
@@ -255,4 +279,5 @@ export const ParcelService = {
   getDeliveryHistoryByReceiver,
   confirmDeliveryByReceiver,
   getAllParcelsByAdmin,
+  updateParcleByAdmin,
 };
