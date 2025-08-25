@@ -59,7 +59,7 @@ const getIncommingParcelsByReceiver = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "All of your incomming parcel retrieved",
       data: result,
     });
@@ -100,6 +100,21 @@ const confirmDeliveryByReceiver = catchAsync(
   }
 );
 
+const getAllParcelsByAdmin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.getAllParcelsByAdmin(decodedToken);
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "All parcels retrieved successfully",
+      data: result,
+    });
+  }
+);
+
 export const ParcelController = {
   createParcelSend,
   cancellParcel,
@@ -107,4 +122,5 @@ export const ParcelController = {
   getIncommingParcelsByReceiver,
   getDeliveryHistoryByReceiver,
   confirmDeliveryByReceiver,
+  getAllParcelsByAdmin,
 };

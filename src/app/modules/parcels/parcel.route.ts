@@ -42,4 +42,10 @@ router.patch(
   ParcelController.confirmDeliveryByReceiver
 );
 
+router.get(
+  "/all",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  ParcelController.getAllParcelsByAdmin
+);
+
 export const ParcelRoutes = router;

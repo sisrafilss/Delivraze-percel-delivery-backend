@@ -226,6 +226,27 @@ const confirmDeliveryByReceiver = async (
   return updatedParcel;
 };
 
+const getAllParcelsByAdmin = async (decodedToken: JwtPayload) => {
+  const isUserExists = await User.findById(decodedToken.userId);
+  if (isUserExists?.role !== Role.ADMIN) {
+    throw new AppError(httpStatus.BAD_REQUEST, "You are not an Admin");
+  }
+
+  const queryBuilder = new QueryBuilder(Parcel.find(), {})
+    .filter()
+    .search(parcelSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    queryBuilder.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { data, meta };
+};
+
 export const ParcelService = {
   createParcelSend,
   cancelParcel,
@@ -233,4 +254,5 @@ export const ParcelService = {
   getIncommingParcelsByReceiver,
   getDeliveryHistoryByReceiver,
   confirmDeliveryByReceiver,
+  getAllParcelsByAdmin,
 };
