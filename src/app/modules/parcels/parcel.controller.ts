@@ -5,14 +5,11 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { ParcelService } from "./parcel.service";
 
-const parcelRequest = catchAsync(
+const createParcelSend = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user as JwtPayload;
 
-    const result = await ParcelService.parcelSendRequest(
-      decodedToken,
-      req.body
-    );
+    const result = await ParcelService.createParcelSend(decodedToken, req.body);
 
     sendResponse(res, {
       success: true,
@@ -68,10 +65,27 @@ const getIncommingParcelsByReceiver = catchAsync(
     });
   }
 );
+const getDeliveryHistoryByReceiver = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+
+    const result = await ParcelService.getDeliveryHistoryByReceiver(
+      decodedToken
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "All of your parcel history retrieved",
+      data: result,
+    });
+  }
+);
 
 export const ParcelController = {
-  parcelRequest,
+  createParcelSend,
   cancellParcel,
   getAllParcelsBySender,
   getIncommingParcelsByReceiver,
+  getDeliveryHistoryByReceiver,
 };

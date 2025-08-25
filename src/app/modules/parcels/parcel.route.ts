@@ -11,7 +11,7 @@ router.post(
   "/send",
   validateRequest(parcelRequestZodSchema),
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN, Role.SENDER),
-  ParcelController.parcelRequest
+  ParcelController.createParcelSend
 );
 router.patch(
   "/cancel/:id",
@@ -19,10 +19,17 @@ router.patch(
   ParcelController.cancellParcel
 );
 router.get("/", checkAuth(Role.SENDER), ParcelController.getAllParcelsBySender);
+
 router.get(
   "/incomming",
   checkAuth(Role.RECEIVER),
   ParcelController.getIncommingParcelsByReceiver
+);
+
+router.get(
+  "/receiver/history",
+  checkAuth(Role.RECEIVER),
+  ParcelController.getDeliveryHistoryByReceiver
 );
 
 export const ParcelRoutes = router;

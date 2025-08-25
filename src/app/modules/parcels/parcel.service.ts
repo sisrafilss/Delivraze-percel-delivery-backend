@@ -2,9 +2,9 @@ import httpStatus from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../errorHelpers/AppError";
 import { QueryBuilder } from "../../utils/QueryBuilder";
-import { userSearchableFields } from "../user/user.constant";
 import { Role } from "../user/user.interface";
 import { User } from "../user/user.model";
+import { parcelSearchableFields } from "./parcel.constant";
 import {
   IParcelRequest,
   ParcelStatus,
@@ -12,7 +12,7 @@ import {
 } from "./parcel.interface";
 import { Parcel } from "./parcel.model";
 
-const parcelSendRequest = async (
+const createParcelSend = async (
   decodedToken: JwtPayload,
   payload: Partial<IParcelRequest>
 ) => {
@@ -34,6 +34,16 @@ const parcelSendRequest = async (
       httpStatus.BAD_REQUEST,
       "Update your address and phone to complete the send request"
     );
+  }
+
+  const isReceiverExists = await User.find({ email: payload.receiverEmail });
+
+  if (!isReceiverExists.length) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Receiver not found!");
+  }
+
+  if (isReceiverExists[0].role !== Role.RECEIVER) {
+    throw new AppError(httpStatus.BAD_REQUEST, `Receiver email is invalid`);
   }
 
   const updatedPayload = {
@@ -92,7 +102,7 @@ const getAllParcelsBySender = async (decodedToken: JwtPayload) => {
 
   const queryBuilder = new QueryBuilder(Parcel.find(), query)
     .filter()
-    .search(userSearchableFields)
+    .search(parcelSearchableFields)
     .sort()
     .fields()
     .paginate();
@@ -112,24 +122,61 @@ const getIncommingParcelsByReceiver = async (decodedToken: JwtPayload) => {
   }
 
   const query = {
-    receiverId: decodedToken.userId,
+    receiverEmail: decodedToken.email,
     status: {
       $in: [
         ParcelStatus.IN_TRANSIT,
         ParcelStatus.ACCEPTED,
         ParcelStatus.PENDING,
+        ParcelStatus.CANCELLED,
       ],
     },
   };
 
-  const result = await Parcel.find(query);
+  const queryBuilder = new QueryBuilder(Parcel.find(), query)
+    .filter()
+    .search(parcelSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
 
-  return result;
+  const [data, meta] = await Promise.all([
+    queryBuilder.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { data, meta };
+};
+
+const getDeliveryHistoryByReceiver = async (decodedToken: JwtPayload) => {
+  const isUserExists = await User.findById(decodedToken.userId);
+  if (isUserExists?.role !== Role.RECEIVER) {
+    throw new AppError(httpStatus.BAD_REQUEST, "You are not a Receiver");
+  }
+
+  const query = {
+    receiverEmail: decodedToken.email,
+  };
+
+  const queryBuilder = new QueryBuilder(Parcel.find(), query)
+    .filter()
+    .search(parcelSearchableFields)
+    .sort()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    queryBuilder.build(),
+    queryBuilder.getMeta(),
+  ]);
+
+  return { data, meta };
 };
 
 export const ParcelService = {
-  parcelSendRequest,
+  createParcelSend,
   cancelParcel,
   getAllParcelsBySender,
   getIncommingParcelsByReceiver,
+  getDeliveryHistoryByReceiver,
 };

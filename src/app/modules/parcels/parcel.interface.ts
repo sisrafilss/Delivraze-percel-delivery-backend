@@ -31,6 +31,7 @@ export interface IParcelRequest {
   receiverName: string;
   receiverPhone: string;
   receiverAddress: string;
+  receiverEmail: string;
 
   parcelType: ParcelType;
   weight: number; // in gm
