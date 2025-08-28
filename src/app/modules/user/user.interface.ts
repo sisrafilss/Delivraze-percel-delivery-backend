@@ -2,6 +2,7 @@ import { ObjectId, Types } from "mongoose";
 
 export enum Role {
   SUPER_ADMIN = "ADMIN",
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   ADMIN = "ADMIN",
   SENDER = "SENDER",
   RECEIVER = "RECEIVER",

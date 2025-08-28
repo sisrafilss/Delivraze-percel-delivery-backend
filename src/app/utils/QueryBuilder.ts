@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Query } from "mongoose";
 import { excludeField } from "../constants";
 
@@ -81,6 +82,7 @@ export class QueryBuilder<T> {
     const filter = { ...this.query };
 
     for (const field of excludeField) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete filter[field];
     }
 

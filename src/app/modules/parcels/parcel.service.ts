@@ -130,7 +130,7 @@ const getIncommingParcelsByReceiver = async (
   decodedToken: JwtPayload,
   query: Record<string, string>
 ) => {
-  const isUserExists = await User.findById(decodedToken.userId);
+  // const isUserExists = await User.findById(decodedToken.userId);
 
   const updatedQuery = {
     ...query,
