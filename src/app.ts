@@ -28,6 +28,13 @@ app.use(
     credentials: true,
   })
 );
+app.set("trust proxy", 1);
+app.use(
+  cors({
+    origin: envVars.FRONTEND_URL,
+    credentials: true,
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
