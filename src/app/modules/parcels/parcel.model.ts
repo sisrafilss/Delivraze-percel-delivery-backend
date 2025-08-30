@@ -1,9 +1,5 @@
 import { Schema, model } from "mongoose";
-// import { nanoid } from "nanoid";
-async function generateId() {
-  const { nanoid } = await import("nanoid");
-  return nanoid(15);
-}
+import { v4 as uuidv4 } from "uuid";
 
 import {
   IParcelRequest,
@@ -12,6 +8,10 @@ import {
   ParcelType,
   PaymentMethod,
 } from "./parcel.interface";
+
+function generateTrackingId() {
+  return uuidv4().replace(/-/g, "").slice(0, 15);
+}
 
 const statusLogSchema = new Schema<IStatusLog>(
   {
@@ -33,7 +33,7 @@ const parcelRequestSchema = new Schema<IParcelRequest>(
     trackingId: {
       type: String,
       unique: true,
-      default: () => generateId(), // auto-generate a short tracking code
+      default: () => generateTrackingId(), // auto-generate a short tracking code
     },
     senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     senderName: { type: String, required: true },
