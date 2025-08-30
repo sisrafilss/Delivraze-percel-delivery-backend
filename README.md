@@ -30,6 +30,13 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
 ### 🔐 Auth
 
 - `POST /api/v1/auth/login` → Login registerd user using email and password (JWT based)
+  The request body will contain the user's email and password for login. By default, one user is created for testing purposes with the `ADMIN` role (a Super Admin is not available; this predefined Admin will act as the Super Admin).
+
+```json
+    "email": "super@gmail.com",
+    "password": "12345678"
+```
+
 - `POST /api/v1/auth/logout` → Logout for logged in user (clear accessToken from browser cookie)
 - `POST /api/v1/auth/refresh-token` → Get new Access Token using Refresh Token
 - `POST /api/v1/auth/change-password` → Change password for already logged in user
