@@ -1,6 +1,6 @@
 # 📦 Delivraze Parcel Delivery Backend
 
-Delivraze is a Bangladeshi parcel delivery company (imaginary). This repository contani the backend application of the Delivraze's parcel delivery system. This is v1.0.0 allow user's to register as a SENDER, or RECEIVER. Send parcel request, maange parcels and users by admin, and see the status log. Also anyone can track the parcel and it's status log using a trackign id without login. Live Hosted Link:
+[Delivraze](https://delivraze-percel-delivery-backend.vercel.app) is a Bangladeshi parcel delivery company (imaginary). This repository contani the backend application of the Delivraze's parcel delivery system. This is v1.0.0 allow user's to register as a SENDER, or RECEIVER. Send parcel request, maange parcels and users by admin, and see the status log. Also anyone can track the parcel and it's status log using a trackign id without login. Live Hosted Link: [https://delivraze-percel-delivery-backend.vercel.app](https://delivraze-percel-delivery-backend.vercel.app)
 
 Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)**.
 
@@ -32,6 +32,8 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
 - `POST /api/v1/auth/login` → Login registerd user using email and password (JWT based)
   The request body will contain the user's email and password for login. By default, one user is created for testing purposes with the `ADMIN` role (a Super Admin is not available; this predefined Admin will act as the Super Admin).
 
+An example of request body
+
 ```json
 {
   "email": "super@gmail.com",
@@ -42,31 +44,31 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
 - `POST /api/v1/auth/logout` → Logout for logged in user (clear accessToken from browser cookie)
 - `POST /api/v1/auth/refresh-token` → Get new Access Token using Refresh Token
 - `POST /api/v1/auth/change-password` → Change password for already logged in user
-  Request body will contain ->
+  Request body example ->
 
 ```json
 {
-  "oldPassword": "old Password",
-  "newPassword": "new password"
+  "oldPassword": "ABeioxko@933",
+  "newPassword": "DEFiosdio#iws"
 }
 ```
 
 - `POST /api/v1/auth/forgot-password` → Request for a reset password link via email if password forgot
-  Request body will include -
+  Request body example -
 
 ```json
 {
-  "email": "a valid registered email address"
+  "email": "israfilhossen3@gmail.com"
 }
 ```
 
 - `POST /api/v1/auth/reset-password` → Reset a new password using password reset link got via email
-  Request body will include -
+  Request body example -
 
 ```json
 {
-  "id": "user's id that he got throw email link",
-  "newPassword": "new valid password"
+  "id": "68b0112efc27c55a6e574423",
+  "newPassword": "IIow@i9sl33"
 }
 ```
 
@@ -87,6 +89,14 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
 ```
 
 - `PATCH /api/v1/user/userId` → Update user's information (for admin)
+  An example of request body is given below -
+
+```json
+{
+  "senderAddress": "Gulsan 2"
+}
+```
+
 - `GET /api/v1/user/all-users` → GET all users (for admin)
 - `GET /api/v1/user/me` → GET logged in user's information
 - `GET /api/v1/user/userId` → GET a single user's information (admin)
@@ -126,8 +136,16 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
 - `GET /api/v1/parcel/parcelId` → GET a single parcel (admin)
 - `GET /api/v1/parcel/parcelId/status-log` → GET a single parcel Status Log (admin)
 - `PATCH /api/v1/parcel/update/parcelId` → Update / Manage Parcels (admin)
+  Request body example -
+
+```json
+{
+  "senderAddress": "Gulsan 2"
+}
+```
+
 - `PATCH /api/v1/parcel/status/parcelId` → Update Parcel Status (admin)
-- `DELETE /api/v1/parcel/delete/parcelId` → UDelete Parcel (admin)
+- `DELETE /api/v1/parcel/delete/parcelId` → Delete Parcel (admin)
 
 ### 👥 Public
 

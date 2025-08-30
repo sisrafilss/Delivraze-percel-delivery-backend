@@ -2,8 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Parcel = void 0;
 const mongoose_1 = require("mongoose");
-const nanoid_1 = require("nanoid");
+const uuid_1 = require("uuid");
 const parcel_interface_1 = require("./parcel.interface");
+function generateTrackingId() {
+    return (0, uuid_1.v4)().replace(/-/g, "").slice(0, 15);
+}
 const statusLogSchema = new mongoose_1.Schema({
     status: {
         type: String,
@@ -19,7 +22,7 @@ const parcelRequestSchema = new mongoose_1.Schema({
     trackingId: {
         type: String,
         unique: true,
-        default: () => (0, nanoid_1.nanoid)(15), // auto-generate a short tracking code
+        default: () => generateTrackingId(), // auto-generate a short tracking code
     },
     senderId: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     senderName: { type: String, required: true },
