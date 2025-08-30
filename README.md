@@ -33,19 +33,59 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
   The request body will contain the user's email and password for login. By default, one user is created for testing purposes with the `ADMIN` role (a Super Admin is not available; this predefined Admin will act as the Super Admin).
 
 ```json
-    "email": "super@gmail.com",
-    "password": "12345678"
+{
+  "email": "super@gmail.com",
+  "password": "12345678"
+}
 ```
 
 - `POST /api/v1/auth/logout` → Logout for logged in user (clear accessToken from browser cookie)
 - `POST /api/v1/auth/refresh-token` → Get new Access Token using Refresh Token
 - `POST /api/v1/auth/change-password` → Change password for already logged in user
+  Request body will contain ->
+
+```json
+{
+  "oldPassword": "old Password",
+  "newPassword": "new password"
+}
+```
+
 - `POST /api/v1/auth/forgot-password` → Request for a reset password link via email if password forgot
+  Request body will include -
+
+```json
+{
+  "email": "a valid registered email address"
+}
+```
+
 - `POST /api/v1/auth/reset-password` → Reset a new password using password reset link got via email
+  Request body will include -
+
+```json
+{
+  "id": "user's id that he got throw email link",
+  "newPassword": "new valid password"
+}
+```
 
 ### 👤 Users
 
 - `POST /api/v1/user/register` → Register a new user using credentials
+  An example of request body is given below -
+
+```json
+{
+  "name": "Israfil Hossen",
+  "email": "israfilhossen3@gmail.com",
+  "password": "Israfil@123",
+  "phone": "+8801522888888",
+  "address": "Uttar Badda, Dhaka",
+  "role": "SENDER" // or RECEIVER
+}
+```
+
 - `PATCH /api/v1/user/userId` → Update user's information (for admin)
 - `GET /api/v1/user/all-users` → GET all users (for admin)
 - `GET /api/v1/user/me` → GET logged in user's information
@@ -55,6 +95,23 @@ Built with **Node.js**, **Express.js**, **TypeScript**, and **MongoDB (Mongoose)
 
 - `GET /api/v1/parcel` → GET all parcels by sender
 - `POST /api/v1/parcel` → Send a parcel pickup request by sender
+  An example of request body is given below -
+
+```json
+{
+  "senderId": "68b0112efc27c55a6e574423",
+  "receiverName": "John Doe",
+  "receiverPhone": "+8801712345678",
+  "receiverAddress": "House 12, Road 7, Dhanmondi, Dhaka",
+  "receiverEmail": "mrreceiver@gmail.com",
+  "parcelType": "Electronics", // it can be either "Documents", "Cloths", "Books", "Cosmetics", "Toys","Electronics",
+  "weight": 1500, // in gm
+  "specialInstructions": "Handle with care, fragile item inside",
+  "pickupLocation": "Banani, Dhaka",
+  "dropoffLocation": "Uttara, Dhaka"
+}
+```
+
 - `PATCH /api/v1/parcel/cancel/parcelId` → Cancel a parcel pickup request before picked
 
 ### 📦 Parcels - Receiver
