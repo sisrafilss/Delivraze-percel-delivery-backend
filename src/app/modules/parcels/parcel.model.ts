@@ -1,5 +1,10 @@
 import { Schema, model } from "mongoose";
-import { nanoid } from "nanoid";
+// import { nanoid } from "nanoid";
+async function generateId() {
+  const { nanoid } = await import("nanoid");
+  return nanoid(15);
+}
+
 import {
   IParcelRequest,
   IStatusLog,
@@ -28,7 +33,7 @@ const parcelRequestSchema = new Schema<IParcelRequest>(
     trackingId: {
       type: String,
       unique: true,
-      default: () => nanoid(15), // auto-generate a short tracking code
+      default: () => generateId(), // auto-generate a short tracking code
     },
     senderId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     senderName: { type: String, required: true },
