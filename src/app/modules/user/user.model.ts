@@ -30,7 +30,7 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(IsActive),
       default: IsActive.ACTIVE,
     },
-    isVerified: { type: Boolean, default: false }, // keep it true because email verification is not configured yet
+    isVerified: { type: Boolean, default: false },
     auths: [AuthProviderSchema],
   },
   {
