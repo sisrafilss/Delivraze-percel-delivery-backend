@@ -10,6 +10,7 @@ import {
   credentialLoginZodSchema,
   forgotPasswordZodSchema,
   resetPasswordZodSchema,
+  updateProfileZodSchema,
 } from "./auth.validation";
 
 const router = Router();
@@ -18,6 +19,12 @@ router.post(
   "/login",
   validateRequest(credentialLoginZodSchema),
   AuthController.credentialsLogin
+);
+router.patch(
+  "/update-profile",
+  checkAuth(...Object.values(Role)),
+  validateRequest(updateProfileZodSchema),
+  AuthController.updateProfile
 );
 router.post("/refresh-token", AuthController.getNewAccessToken);
 router.post("/logout", AuthController.logout);

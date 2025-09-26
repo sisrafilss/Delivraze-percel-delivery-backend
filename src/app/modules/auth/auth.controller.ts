@@ -12,6 +12,22 @@ import { setAuthCookie } from "../../utils/setCookie";
 import { createUserTokens } from "../../utils/userTokens";
 import { AuthServices } from "./auth.service";
 
+const updateProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const updatedProfile = await AuthServices.updateProfile(
+      req.body,
+      req.user as JwtPayload
+    );
+
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "Your profile updated",
+      data: updatedProfile,
+    });
+  }
+);
+
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate("local", async (err: any, user: any, info: any) => {
@@ -107,6 +123,8 @@ const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
 
+    console.log("DECODED TOKEN:", decodedToken);
+
     await AuthServices.resetPassword(req.body, decodedToken as JwtPayload);
 
     sendResponse(res, {
@@ -121,6 +139,8 @@ const resetPassword = catchAsync(
 const forgotPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
+
+    // console.log("INSIDE FORGOT PASSWORD");
 
     await AuthServices.forgotPassword(email);
 
@@ -159,4 +179,5 @@ export const AuthController = {
   forgotPassword,
   resetPassword,
   googleCallbackController,
+  updateProfile,
 };

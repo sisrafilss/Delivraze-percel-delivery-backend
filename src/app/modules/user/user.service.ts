@@ -53,7 +53,6 @@ const updateUser = async (
   }
 
   const ifUserExist = await User.findById(userId);
-
   if (!ifUserExist) {
     throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
   }

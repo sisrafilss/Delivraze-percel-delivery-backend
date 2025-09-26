@@ -7,7 +7,29 @@ import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
 import { sendEmail } from "../../utils/sendEmail";
 import { createNewAccessTokenWithRefreshToken } from "../../utils/userTokens";
+import { IUser } from "../user/user.interface";
 import { User } from "../user/user.model";
+
+const updateProfile = async (
+  payload: Partial<IUser>,
+  decodedToken: JwtPayload
+) => {
+  const ifUserExist = await User.findById(decodedToken.userId);
+  if (!ifUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+  }
+
+  const updatedProfile = await User.findByIdAndUpdate(
+    ifUserExist._id,
+    payload,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  return updatedProfile;
+};
 
 const getNewAccessToken = async (refreshToken: string) => {
   const newAccessToken = await createNewAccessTokenWithRefreshToken(
@@ -103,4 +125,5 @@ export const AuthServices = {
   changePassword,
   forgotPassword,
   resetPassword,
+  updateProfile,
 };
