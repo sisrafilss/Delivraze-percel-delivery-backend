@@ -36,7 +36,6 @@ export const parcelRequestZodSchema = z.object({
 });
 
 export const confirmDeliveryByReceiverZodSchema = z.object({
-  receiverEmail: z.string().email("receiverEmail must be a valid email"),
   _id: z
     .string()
     .regex(/^[0-9a-fA-F]{24}$/, "_id must be a 24-char hex MongoDB ObjectId"),

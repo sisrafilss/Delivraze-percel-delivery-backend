@@ -52,7 +52,7 @@ const getAllParcelsBySender = catchAsync(
 
     sendResponse(res, {
       success: true,
-      statusCode: httpStatus.CREATED,
+      statusCode: httpStatus.OK,
       message: "All of your sending parcel requests",
       data: result.data,
       meta: result.meta,

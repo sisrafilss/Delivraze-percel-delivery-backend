@@ -196,12 +196,12 @@ const confirmDeliveryByReceiver = async (
   if (!isUserExists)
     throw new AppError(httpStatus.BAD_REQUEST, "User does not exist");
 
-  if (decodedToken.email !== payload.receiverEmail) {
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      `Credential doesn't match. Check the user email in the request body`
-    );
-  }
+  // if (decodedToken.email !== payload.receiverEmail) {
+  //   throw new AppError(
+  //     httpStatus.BAD_REQUEST,
+  //     `Credential doesn't match. Check the user email in the request body`
+  //   );
+  // }
 
   const isParcelExist = await Parcel.findById(payload._id);
   if (!isParcelExist) {
