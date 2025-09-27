@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../errorHelpers/AppError";
@@ -128,22 +129,47 @@ const getAllParcelsBySender = async (
 
 const getIncommingParcelsByReceiver = async (
   decodedToken: JwtPayload,
-  query: Record<string, string>
+  query: Record<string, any>
 ) => {
-  // const isUserExists = await User.findById(decodedToken.userId);
+  const forbiddenStatuses = [ParcelStatus.CANCELLED, ParcelStatus.DELIVERED];
+
+  // Step 1: validate status input
+  if (query.status) {
+    if (typeof query.status === "string") {
+      if (forbiddenStatuses.includes(query.status as ParcelStatus)) {
+        throw new Error(
+          `Filtering by status '${query.status}' is not allowed.`
+        );
+      }
+    }
+
+    if (Array.isArray(query.status)) {
+      if (query.status.some((st) => forbiddenStatuses.includes(st))) {
+        throw new Error(
+          `Filtering by CANCELLED or DELIVERED status is not allowed.`
+        );
+      }
+    }
+  }
+
+  // Step 2: build status condition
+  let statusCondition: any;
+
+  if (!query.status) {
+    // Case 1: user didn't pass status → exclude CANCELLED & DELIVERED
+    statusCondition = { $nin: forbiddenStatuses };
+  } else {
+    // Case 2: user passed status → keep it as-is (validated already)
+    statusCondition = query.status;
+  }
 
   const updatedQuery = {
     ...query,
     receiverEmail: decodedToken.email,
-    status: {
-      $in: [
-        ParcelStatus.IN_TRANSIT,
-        ParcelStatus.ACCEPTED,
-        ParcelStatus.PENDING,
-      ],
-    },
+    status: statusCondition,
   };
 
+  // Step 3: query builder
   const queryBuilder = new QueryBuilder(Parcel.find(), updatedQuery)
     .filter()
     .search(parcelSearchableFields)
