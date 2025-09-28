@@ -76,6 +76,8 @@ export const updateParcelByAdminZodSchema = z.object({
   paymentMethod: z.nativeEnum(PaymentMethod).optional(),
   isPaid: z.boolean().optional(),
   isBlocked: z.boolean().optional(),
+  location: z.string({ message: "Location is required" }),
+  note: z.string({ message: "Please enter a note for status change" }),
 });
 
 export const updateParcelStatusSchema = z.object({

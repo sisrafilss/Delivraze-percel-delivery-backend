@@ -53,6 +53,7 @@ const createParcelSend = async (
     senderName: isUserExists.name,
     senderPhone: isUserExists.phone as string,
     senderAddress: isUserExists.address as string,
+    senderEmail: isUserExists.email as string,
     ...payload,
     status: ParcelStatus.PENDING,
     paymentMethod: PaymentMethod.CASH_ON_DELIVERY,
@@ -204,7 +205,8 @@ const getDeliveryHistoryByReceiver = async (
     .search(parcelSearchableFields)
     .sort()
     .fields()
-    .paginate();
+    .paginate()
+    .populate();
 
   const [data, meta] = await Promise.all([
     queryBuilder.build(),
@@ -309,6 +311,18 @@ const updateParcleByAdmin = async (
     throw new AppError(httpStatus.BAD_REQUEST, "Parcel not found!");
   }
 
+  if (payload.status) {
+    isParcelExist.status = payload.status as ParcelStatus;
+    isParcelExist.statusLog.push({
+      status: payload.status as ParcelStatus,
+      updatedBy: decodedToken.userId,
+      note: payload?.note,
+      location: payload?.location,
+      timestamp: new Date(),
+    });
+    await isParcelExist.save();
+  }
+
   const updatedParcel = await Parcel.findByIdAndUpdate(parcelId, payload, {
     new: true,
     runValidators: true,
@@ -384,6 +398,7 @@ const getSingleParcelByAdmin = async (parcelId: string) => {
     "name email role"
   );
 };
+
 const getSingleParcelStatusLogByAdmin = async (parcelId: string) => {
   return await Parcel.findById(parcelId)
     .select("statusLog")

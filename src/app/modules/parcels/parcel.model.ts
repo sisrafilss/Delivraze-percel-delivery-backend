@@ -39,6 +39,7 @@ const parcelRequestSchema = new Schema<IParcelRequest>(
     senderName: { type: String, required: true },
     senderPhone: { type: String, required: true },
     senderAddress: { type: String, required: true },
+    senderEmail: { type: String, required: true },
 
     receiverName: { type: String, required: true },
     receiverPhone: { type: String, required: true },

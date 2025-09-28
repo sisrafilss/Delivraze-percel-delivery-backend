@@ -37,6 +37,7 @@ export interface IParcelRequest {
   senderName: string;
   senderPhone: string;
   senderAddress: string;
+  senderEmail: string;
 
   receiverName: string;
   receiverPhone: string;
