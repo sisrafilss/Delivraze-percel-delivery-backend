@@ -15,7 +15,7 @@ export enum PaymentMethod {
 
 export enum ParcelType {
   DOCUMENTS = "Documents",
-  CLOTHES = "Cloths",
+  CLOTHES = "Clothes",
   BOOKS = "Books",
   COSMETICS = "Cosmetics",
   TOYS = "Toys",
