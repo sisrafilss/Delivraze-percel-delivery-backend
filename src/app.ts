@@ -11,32 +11,33 @@ import { router } from "./app/routes";
 
 const app = express();
 
+app.set("trust proxy", 1);
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173", envVars.FRONTEND_URL],
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
 app.use(
   expressSession({
     secret: envVars.EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      secure: true,
+      sameSite: "none",
+    },
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.json());
-// app.set("trust proxy", 1);
-app.use(
-  cors({
-    origin: envVars.FRONTEND_URL,
-    credentials: true,
-  })
-);
-app.set("trust proxy", 1);
-app.use(
-  cors({
-    origin: envVars.FRONTEND_URL,
-    credentials: true,
-  })
-);
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 app.use("/api/v1", router);
 
@@ -46,9 +47,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 app.use(globalErrorHandler);
-
 app.use(notFound);
 
 export default app;
